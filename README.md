@@ -12,7 +12,7 @@ The user (teacher/admin) will input the following details for each student:
 <li>Other necessary details (optional, like class, section, etc.)</li>
 </ul>
 
-<li> Calculations </li>
+<li> <h3>Calculations </h3</li>
 <ul>
 
 <li><b>Grades:</b> Calculates grades for each subject and the overall grade.</li>
