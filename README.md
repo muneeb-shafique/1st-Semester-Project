@@ -1,7 +1,7 @@
 # 1st Semester Project
 This is a Student Grade Management System project developed for the first semester of my Data Science Program at University of Engineering &amp; Technology(UET), Lahore. The system is built using Python and aims to manage and organize student data, including their grades, efficiently.
 
-#Features
+# Features
 <ol>
 <li><h3>User Input</h3></li>
 The user (teacher/admin) will input the following details for each student:
