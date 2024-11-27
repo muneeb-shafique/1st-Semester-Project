@@ -1,0 +1,125 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>About Us - Student Grade Management System</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            margin: 0;
+            padding: 0;
+            background-color: #f4f4f4;
+            color: #333;
+            margin-bottom: 100px;
+        }
+        header {
+            background-color: #0044cc;
+            color: white;
+            padding: 20px;
+            text-align: center;
+        }
+        main {
+            padding: 20px;
+        }
+        h1, h2, h3 {
+            color: #333;
+            margin-bottom: 10px;
+        }
+        ol {
+            padding-left: 20px;
+        }
+        li {
+            margin: 10px 0;
+        }
+        ul {
+            margin-left: 20px;
+        }
+        .section-title {
+            font-size: 1.4em;
+            font-weight: bold;
+            margin-top: 20px;
+        }
+        .container {
+            max-width: 960px;
+            margin: 0 auto;
+            background-color: white;
+            padding: 20px;
+            border-radius: 8px;
+            box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
+        }
+        footer {
+            text-align: center;
+            background-color: #0044cc;
+            color: white;
+            padding: 10px 0;
+            position: fixed;
+            width: 100%;
+            bottom: 0;
+        }
+    </style>
+</head>
+<body>
+    <header>
+        <h1 style="color:#d7d7d7;">Student Grade Management System</h1>
+        <p>My name is Muneeb, and I am a Data Science student at UET Lahore. My roll number is 36. This project is being developed as part of my first semester project for the PF (Programming Fundamentals) course.</p>
+    </header>
+
+    <main>
+        <div class="container">
+            <h2>About the Project</h2>
+            <p>This project aims to manage and organize student data, including their grades, efficiently. The system is built using Python and helps teachers or administrators track student performance.</p>
+
+            <div class="section-title">Features</div>
+            <ol>
+                <li><h3>User Input</h3>
+                    <p>The user (teacher/admin) will input the following details for each student:</p>
+                    <ul>
+                        <li>Student Name</li>
+                        <li>Roll Number</li>
+                        <li>Marks for each subject (e.g., AICT, PF, Calculus, etc.)</li>
+                        <li>Other necessary details (optional, like class, section, etc.)</li>
+                    </ul>
+                </li>
+
+                <li><h3>Calculations</h3>
+                    <ul>
+                        <li><b>Grades:</b> Calculates grades for each subject and the overall grade.</li>
+                        <li><b>Percentage:</b> Calculates the percentage based on total marks and maximum possible marks.</li>
+                        <li><b>Marks:</b> Calculates individual subject marks and total marks.</li>
+                        <li><b>Position:</b> Ranks students based on their total marks (1st, 2nd, 3rd, etc.).</li>
+                    </ul>
+                </li>
+
+                <li><h3>Report Generation</h3>
+                    <p>Generates a Report Card for each student in the form of an HTML file. The report card includes:</p>
+                    <ul>
+                        <li>Student’s name, roll number, and marks for each subject.</li>
+                        <li>Obtained marks, total marks, percentage, grade, and position.</li>
+                        <li>The report is styled with HTML for better presentation.</li>
+                    </ul>
+                </li>
+
+                <li><h3>Additional Features</h3>
+                    <ul>
+                        <li><b>Data Validation:</b> Ensures entered marks are numeric and within the valid range.</li>
+                        <li><b>Report Accessibility:</b> The generated report card is easily shareable and printable.</li>
+                    </ul>
+                </li>
+            </ol>
+
+            <div class="section-title">Flow of the System</div>
+            <ul>
+                <li><b>User Input:</b> Teacher/admin enters student data via a user interface.</li>
+                <li><b>Processing:</b> The system calculates marks, percentage, grades, and ranks.</li>
+                <li><b>Report Generation:</b> After processing, the system generates the student’s report card in HTML format.</li>
+                <li><b>Output:</b> The generated report card can be viewed, edited, or printed by the user.</li>
+            </ul>
+        </div>
+    </main>
+
+    <footer>
+        <p>&copy; 2024 University of Engineering & Technology (UET), Lahore. All rights reserved.</p>
+    </footer>
+</body>
+</html>
