@@ -104,7 +104,7 @@ class MultiPageApp(tk.Tk):
         """Create result file and save details."""
         try:
             if self.resultname_entry.get()!=0 and self.uni_entry.get()!="" and self.dep_entry.get()!="" and self.strength_entry.get()!="" and self.section_entry.get()!="":
-                if self.strength_entry.get().isdigit() and self.resultname_entry.get().isalpha and self.uni_entry.get().isalpha and self.dep_entry.get().isalpha and self.strength_entry.get().isalpha:
+                if self.strength_entry.get().isdigit() and self.resultname_entry.get().isalpha() and self.uni_entry.get().isalpha() and self.dep_entry.get().isalpha() and self.strength_entry.get().isalpha():
                     if not os.path.isdir("Resultcards/" + self.resultname_entry.get()):  
                         os.mkdir("Resultcards/" + self.resultname_entry.get())
                         with open("Resultcards/" + self.resultname_entry.get() + "/details.uet", "x") as r:
@@ -282,7 +282,7 @@ class MultiPageApp(tk.Tk):
             setattr(self, f"{subject.lower()}_total_entry", total_entry)
 
     def grade(self,obtain,total):
-        percentage = (obtain/total)*100
+        percentage = (int(obtain)/int(total))*100
         if percentage>=90:
             return "A"
         elif percentage>=80:
@@ -292,7 +292,12 @@ class MultiPageApp(tk.Tk):
         elif percentage>=60:
             return "D"
         elif percentage>=50:
+            return "E"
+        elif percentage<50:
             return "F"
+        
+    def comments(self,percentage):
+        pass
 
     def CreateFile(self):
         """Create result file and save details."""
@@ -312,10 +317,33 @@ class MultiPageApp(tk.Tk):
                             print(details)
                         # Copying Result Source from current directory to Results Folder
                         shutil.copy("source.mb","Resultcards/"+ r.read() + "/" + self.name_entry.get()+".html")
-
+                        # Opening File in Read/Write Format to remove previous content and adding the updated one.
                         with open("Resultcards/"+r.read()+self.name_entry.get()+".html","r+") as s:
                             before = s.read()
-                            after = before.replace("<uni-name>",details[0]).replace("<std-name>",self.name_entry.get()).replace("<sect-ion>",details[3]).replace("<department>",details[1]).replace("<roll-no>",details[2]).replace("<total-marks>",str(total_marks)).replace("<percentage-total>",str((obtain_marks/total_marks)*100)).replace("<grade-total>",self.grade(obtain_marks,total_marks))
+                            # Replacing Dummy Text with Actual Data for HTML file
+                            after = before.replace("<uni-name>",details[0])\
+                                            .replace("<std-name>",self.name_entry.get())\
+                                            .replace("<sect-ion>",details[3])\
+                                            .replace("<department>",details[1])\
+                                            .replace("<roll-no>",details[2])\
+                                            .replace("<total-marks>",str(total_marks))\
+                                            .replace("<percentage-total>",str(int((obtain_marks/total_marks)*100))+"%")\
+                                            .replace("<grade-total>",self.grade(obtain_marks,total_marks))\
+                                            .replace("<aict-obtain>",self.aict_obtained_entry.get())\
+                                            .replace("<aict-total>",self.aict_total_entry.get())\
+                                            .replace("<aict-grade>",self.grade(self.aict_obtained_entry.get(),self.aict_total_entry.get()))\
+                                            .replace("<pf-obtain>",self.pf_obtained_entry.get())\
+                                            .replace("<pf-total>",self.pf_total_entry.get())\
+                                            .replace("<pf-grade>",self.grade(self.pf_obtained_entry.get(),self.pf_total_entry.get()))\
+                                            .replace("<ap-obtain>",self.ap_obtained_entry.get())\
+                                            .replace("<ap-total>",self.ap_total_entry.get())\
+                                            .replace("<ap-grade>",self.grade(self.ap_obtained_entry.get(),self.ap_total_entry.get()))\
+                                            .replace("<dm-obtain>",self.dm_obtained_entry.get())\
+                                            .replace("<dm-total>",self.dm_total_entry.get())\
+                                            .replace("<dm-grade>",self.grade(self.dm_obtained_entry.get(),self.dm_total_entry.get()))\
+                                            .replace("<calculus-obtain>",self.calculus_obtained_entry.get())\
+                                            .replace("<calculus-total>",self.calculus_total_entry.get())\
+                                            .replace("<calculus-grade>",self.grade(self.calculus_obtained_entry.get(),self.calculus_total_entry.get()))
                             print(after)
                             s.seek(0)  # Move cursor back to the beginning of the file
                             s.write(after)  # Write modified content
@@ -325,8 +353,6 @@ class MultiPageApp(tk.Tk):
                 messagebox.showerror("Error","Please enter valid input")
         except ValueError:
             messagebox.showerror("Error",ValueError)
-
-
 
 # Run the application
 if __name__ == "__main__":

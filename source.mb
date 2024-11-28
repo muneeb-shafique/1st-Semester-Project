@@ -126,9 +126,9 @@
     <div class="container" id="content">
         <!-- Header Section -->
         <div class="header">
-            <div class="university-name">XYZ University</div>
+            <div class="university-name"><uni-name></div>
             <h1>Student Result</h1>
-            <p>Here are the results of your recent exam</p>
+            <p>Here are the results of your exams</p>
         </div>
 
         <!-- Student Information Table -->
@@ -138,19 +138,19 @@
             </tr>
             <tr>
                 <td><strong>Name:</strong></td>
-                <td>John Doe</td>
+                <td><std-name></td>
             </tr>
             <tr>
                 <td><strong>Section:</strong></td>
-                <td>A</td>
+                <td><sect-ion></td>
             </tr>
             <tr>
                 <td><strong>Department:</strong></td>
-                <td>Computer Science</td>
+                <td><department></td>
             </tr>
             <tr>
                 <td><strong>Roll No:</strong></td>
-                <td>123456</td>
+                <td><roll-no></td>
             </tr>
         </table>
 
@@ -161,15 +161,15 @@
             </tr>
             <tr>
                 <td><strong>Total Marks:</strong></td>
-                <td>450/500</td>
+                <td><total-marks></td>
             </tr>
             <tr>
                 <td><strong>Percentage:</strong></td>
-                <td><span class="percentage">90%</span></td>
+                <td><span class="percentage"><percentage-total></span></td>
             </tr>
             <tr>
                 <td><strong>Grade:</strong></td>
-                <td><span class="grade">A+</span></td>
+                <td><span class="grade"><grade-total></span></td>
             </tr>
         </table>
 
@@ -186,33 +186,33 @@
             </tr>
             <tr>
                 <td>AICT</td>
-                <td>90</td>
-                <td>100</td>
-                <td>A</td>
+                <td><aict-obtain></td>
+                <td><aict-total></td>
+                <td><aict-grade></td>
             </tr>
             <tr>
                 <td>PF</td>
-                <td>85</td>
-                <td>100</td>
-                <td>B+</td>
+                <td><pf-obtain></td>
+                <td><pf-total></td>
+                <td><pf-grade></td>
             </tr>
             <tr>
                 <td>AP</td>
-                <td>95</td>
-                <td>100</td>
-                <td>A+</td>
+                <td><ap-obtain></td>
+                <td><ap-total></td>
+                <td><ap-grade></td>
             </tr>
             <tr>
                 <td>DM</td>
-                <td>90</td>
-                <td>100</td>
-                <td>A</td>
+                <td><dm-obtain></td>
+                <td><dm-total></td>
+                <td><dm-grade></td>
             </tr>
             <tr>
                 <td>Calculus</td>
-                <td>90</td>
-                <td>100</td>
-                <td>A</td>
+                <td><calculus-obtain></td>
+                <td><calculus-total></td>
+                <td><calculus-grade></td>
             </tr>
         </table>
 
@@ -227,10 +227,7 @@
             <a href="#" class="btn" id="download-pdf">Download Result PDF</a>
         </div>
     </div>
-
-    <!-- Include html2pdf.js Library -->
     <script src="https://cdnjs.cloudflare.com/ajax/libs/html2pdf.js/0.9.2/html2pdf.bundle.js"></script>
-
     <script>
         document.getElementById('download-pdf').addEventListener('click', function () {
             var element = document.getElementById('content');
