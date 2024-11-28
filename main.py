@@ -2,8 +2,7 @@ import os
 import tkinter as tk
 from tkinter import ttk, messagebox
 import webbrowser
-
-# To Create Results and Redirect to AddDetails() Function.
+import shutil
 
 
 def DeleteResult():
@@ -37,30 +36,6 @@ def DeleteResult():
     else:
         print("No Resultcards Available")
     input()
-    # main()
-
-# # Main Function: From where our program Starts
-# def main():
-#     num=input("Enter Number: ")
-#     if num=='1':
-#         CreateResult()
-#     elif num=='2':
-#         # ViewResult()
-
-#     elif num=='3':
-#         # AddDetail()
-#     elif num=='4':
-#         # RemoveDetail()
-#     elif num=='5':
-#         DeleteResult()
-#     elif num=='6':
-#         pass
-#     elif num=='7':
-#         exit()
-#     else:
-#         os.system("cls") # To Clear the output Screen
-#         input("Invalid Number! Press Enter Key to go back.")
-#         main()
 
 
 # Main application class
@@ -121,24 +96,34 @@ class MultiPageApp(tk.Tk):
         self.page3.pack(fill="both", expand=True)
 
 
+
+
+
+
     def CreateResult(self):
         """Create result file and save details."""
         try:
             if self.resultname_entry.get()!=0 and self.uni_entry.get()!="" and self.dep_entry.get()!="" and self.strength_entry.get()!="" and self.section_entry.get()!="":
-                if not os.path.isdir("Resultcards/" + self.resultname_entry.get()):  
-                    os.mkdir("Resultcards/" + self.resultname_entry.get())
-                    with open("Resultcards/" + self.resultname_entry.get() + "/details.uet", "x") as r:
-                        r.write(self.uni_entry.get() + "\n" + self.dep_entry.get() + "\n" + self.strength_entry.get())
-                    with open("currentproject.uet","w") as r:
-                        r.write(self.resultname_entry.get())
-                    messagebox.showinfo("Info","Result file created successfully.")
-                    self.show_page2()
+                if self.strength_entry.get().isdigit() and self.resultname_entry.get().isalpha and self.uni_entry.get().isalpha and self.dep_entry.get().isalpha and self.strength_entry.get().isalpha:
+                    if not os.path.isdir("Resultcards/" + self.resultname_entry.get()):  
+                        os.mkdir("Resultcards/" + self.resultname_entry.get())
+                        with open("Resultcards/" + self.resultname_entry.get() + "/details.uet", "x") as r:
+                            r.write(self.uni_entry.get() + "\n" + self.dep_entry.get() + "\n" + self.strength_entry.get() + "\n" + self.section_entry.get())
+                        with open("currentproject.uet","w") as r:
+                            r.write(self.resultname_entry.get())
+                        messagebox.showinfo("Info","Result file created successfully.")
+                        self.show_page2()
+                    else:
+                        messagebox.showerror("Error","Result file already exists.")
                 else:
-                    messagebox.showerror("Error","Result file already exists.")
+                    messagebox.showerror("Error","Please enter valid input.")
             else:
                 messagebox.showerror("Error","Please fill all the feilds.")
         except ValueError:
             messagebox.showerror("Error",ValueError)
+
+
+
 
     def setup_page3(self):
         """Setup Page 1 (Main menu) with buttons"""
@@ -235,6 +220,14 @@ class MultiPageApp(tk.Tk):
 
 
 
+    
+
+
+
+
+
+
+
 
     def setup_page2(self):
         """Setup Page 2 (Form page)"""
@@ -262,7 +255,7 @@ class MultiPageApp(tk.Tk):
         self.create_marks_input(form_frame)
 
         # Create Result Button with modern styling
-        self.create_button = self.create_modern_button(self.page2, "Create Result",command=self.page1)
+        self.create_button = self.create_modern_button(self.page2, "Create Result",command=self.CreateFile)
         self.create_button.pack(pady=20, padx=50, fill='x')
 
     def create_modern_entry(self, parent):
@@ -288,45 +281,52 @@ class MultiPageApp(tk.Tk):
             setattr(self, f"{subject.lower()}_obtained_entry", obtained_entry)
             setattr(self, f"{subject.lower()}_total_entry", total_entry)
 
-    def create_result(self):
+    def grade(self,obtain,total):
+        percentage = (obtain/total)*100
+        if percentage>=90:
+            return "A"
+        elif percentage>=80:
+            return "B"
+        elif percentage>=70:
+            return "C"
+        elif percentage>=60:
+            return "D"
+        elif percentage>=50:
+            return "F"
+
+    def CreateFile(self):
+        """Create result file and save details."""
         try:
-            # Get values from the entry fields
-            name = self.name_entry.get()
-            section = self.section_entry.get()
-            department = self.department_entry.get()
-            roll_no = self.roll_no_entry.get()
-            aict_obtained = int(self.aict_obtained_entry.get())
-            aict_total = int(self.aict_total_entry.get())
+            #Validation to ensure that no textbox is empty
+            if self.name_entry.get().isalpha() and self.roll_no_entry.get().isdigit() and self.aict_obtained_entry.get().isdigit() and self.aict_total_entry.get().isdigit() and self.pf_obtained_entry.get().isdigit() and self.pf_total_entry.get().isdigit() and self.ap_obtained_entry.get().isdigit() and self.ap_total_entry.get().isdigit() and self.dm_obtained_entry.get().isdigit() and self.dm_total_entry.get().isdigit() and self.calculus_obtained_entry.get().isdigit() and self.calculus_total_entry.get().isdigit():
+                # Ensuring that the input is valid
+                if int(self.aict_obtained_entry.get())<=int(self.aict_total_entry.get()) and int(self.pf_obtained_entry.get())<=int(self.pf_total_entry.get()) and int(self.ap_obtained_entry.get())<=int(self.ap_total_entry.get()) and int(self.dm_obtained_entry.get())<=int(self.dm_total_entry.get()) and int(self.calculus_obtained_entry.get())<=int(self.calculus_total_entry.get()):
+                    # Calculating Total Obtained and Max Marks
+                    obtain_marks = int(self.aict_obtained_entry.get()) + int(self.pf_obtained_entry.get()) + int(self.ap_obtained_entry.get()) + int(self.dm_obtained_entry.get()) + int(self.calculus_obtained_entry.get())
+                    total_marks = int(self.aict_total_entry.get()) + int(self.pf_total_entry.get()) + int(self.ap_total_entry.get()) + int(self.dm_total_entry.get()) + int(self.calculus_total_entry.get())
+                    # Opening currentproject.uet file in order to get the name of result file we are currently working on
+                    with open("currentproject.uet","r") as r:
+                        # Reading data from details.uet file to get the details related to students
+                        with open("Resultcards/"+r.read()+"/"+"details.uet","r") as d:
+                            details = d.read().split("\n")  # Converting Details in the form of list
+                            print(details)
+                        # Copying Result Source from current directory to Results Folder
+                        shutil.copy("source.mb","Resultcards/"+ r.read() + "/" + self.name_entry.get()+".html")
 
-            pf_obtained = int(self.pf_obtained_entry.get())
-            pf_total = int(self.pf_total_entry.get())
-
-            ap_obtained = int(self.ap_obtained_entry.get())
-            ap_total = int(self.ap_total_entry.get())
-
-            dm_obtained = int(self.dm_obtained_entry.get())
-            dm_total = int(self.dm_total_entry.get())
-
-            calculus_obtained = int(self.calculus_obtained_entry.get())
-            calculus_total = int(self.calculus_total_entry.get())
-
-            # Calculate total marks and percentage
-            total_marks = (aict_obtained + pf_obtained + ap_obtained + dm_obtained + calculus_obtained)
-            total_max_marks = (aict_total + pf_total + ap_total + dm_total + calculus_total)
-            percentage = (total_marks / total_max_marks) * 100
-
-            # Display result in a pop-up
-            result_text = (f"Name: {name}\n"
-                           f"Section: {section}\n"
-                           f"Department: {department}\n"
-                           f"Roll No: {roll_no}\n"
-                           f"Total Marks: {total_marks}/{total_max_marks}\n"
-                           f"Percentage: {percentage:.2f}%")
-            
-            messagebox.showinfo("Student Result", result_text)
-        
+                        with open("Resultcards/"+r.read()+self.name_entry.get()+".html","r+") as s:
+                            before = s.read()
+                            after = before.replace("<uni-name>",details[0]).replace("<std-name>",self.name_entry.get()).replace("<sect-ion>",details[3]).replace("<department>",details[1]).replace("<roll-no>",details[2]).replace("<total-marks>",str(total_marks)).replace("<percentage-total>",str((obtain_marks/total_marks)*100)).replace("<grade-total>",self.grade(obtain_marks,total_marks))
+                            print(after)
+                            s.seek(0)  # Move cursor back to the beginning of the file
+                            s.write(after)  # Write modified content
+                else:
+                    messagebox.showerror("Error","Obtained Marks cannot be greater than total marks.")
+            else:
+                messagebox.showerror("Error","Please enter valid input")
         except ValueError:
-            messagebox.showerror("Input Error", "Please enter valid numbers for marks.")
+            messagebox.showerror("Error",ValueError)
+
+
 
 # Run the application
 if __name__ == "__main__":
