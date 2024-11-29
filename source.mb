@@ -219,7 +219,7 @@
         <!-- Comments Section -->
         <div class="comments">
             <h3>Comments</h3>
-            <p>John has shown excellent performance in all subjects, particularly in the AP subject, where he scored a perfect mark. His dedication and hard work reflect in the result. Keep up the great work!</p>
+            <p><comments></p>
         </div>
 
         <!-- Download Button -->
