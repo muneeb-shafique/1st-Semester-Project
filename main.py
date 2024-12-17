@@ -1,324 +1,379 @@
+import sys
 import os
-import tkinter as tk
-from tkinter import ttk, messagebox
 import webbrowser
 import shutil
+from PyQt5.QtCore import Qt
+from PyQt5.QtGui import QFont
+from PyQt5.QtWidgets import QApplication, QMainWindow, QLabel, QPushButton, QVBoxLayout, QWidget, QMenuBar, QAction, QHBoxLayout, QSpacerItem, QSizePolicy, QLineEdit, QStackedWidget, QMessageBox, QCheckBox
+
+class ModernButton(QPushButton):
+    def __init__(self, label, parent=None):
+        super().__init__(label, parent)
+        self.setStyleSheet("""
+            QPushButton {
+                background-color: #3498db;
+                color: white;
+                border-radius: 10px;
+                font-size: 16px;
+                padding: 15px;
+                border: none;
+            }
+            QPushButton:hover {
+                background-color: #2980b9;
+            }
+            QPushButton:pressed {
+                background-color: #1f618d;
+            }
+        """)
+
+class Page1(QWidget):
+    def __init__(self):
+        super().__init__()
+
+        # Layout for Page1
+        layout = QVBoxLayout()
+
+        # Top layout for Go Back button and title
+        top_layout = QHBoxLayout()
+
+        # Go back button
+        go_back_button = QPushButton("Go Back", self)
+        go_back_button.setStyleSheet("""
+            QPushButton {
+                background-color: #e74c3c;
+                color: white;
+                font-size: 14px;
+                padding: 10px;
+                border: none;
+                border-radius: 5px;
+            }
+            QPushButton:hover {
+                background-color: #c0392b;
+            }
+        """)
+        go_back_button.clicked.connect(self.go_back)
+
+        # Add Go Back button to top left
+        top_layout.addWidget(go_back_button)
+
+        # Add modern title label at the top center
+        title_label = QLabel("Create Results File", self)
+        title_label.setAlignment(Qt.AlignCenter)
+        title_label.setFont(QFont("Arial", 20, QFont.Bold))
+        title_label.setStyleSheet("color: #2C3E50; margin-bottom: 30px;")
+
+        # Spacer to center the title label
+        top_layout.addSpacerItem(QSpacerItem(40, 20, QSizePolicy.Expanding, QSizePolicy.Minimum))
+        top_layout.addWidget(title_label, alignment=Qt.AlignCenter)
+        top_layout.addSpacerItem(QSpacerItem(40, 20, QSizePolicy.Expanding, QSizePolicy.Minimum))
+
+        layout.addLayout(top_layout)
+
+        # Add input fields for Create Result File
+        form_layout = QVBoxLayout()
 
 
-def DeleteResult():
-    count=1
-    print("Result Cards")
-    results = os.listdir("Resultcards/")
-    if len(results)!=0:
-        for result in results:
-            print(str(count)+") "+result)
-            count+=1
-        num = input("Index: ")
-        
-        if num != "" and num.isdigit() and int(num) < count:
-            index=int(num)-1
-            os.system("cls")
-            print("Are you sure you want to delete",results[index],"results permanently? (Y/N)")
-            sure=input()
-            os.system("cls")
-            if sure.upper() =='Y' or sure.upper()=="YES": 
-                for item in os.listdir("Resultcards/"+results[index]+"/"):
-                    os.remove("Resultcards/"+results[index]+"/"+item)
-                os.rmdir("Resultcards/"+results[index])
-                print("Result Removed Successfully!")
-            elif sure.upper() =='N' or sure.upper()=="NO":
-                print("Deletion of",results[index],"is canceled.")
-            else:
-                print("Invalid Input! Press Enter Key go to back.")
-        else:
-            os.system("cls")
-            print("Please Enter Valid Index.")
-    else:
-        print("No Resultcards Available")
-    input()
+        form_layout = QVBoxLayout()
 
+        self.name_input = QLineEdit(self)
+        self.name_input.setPlaceholderText("Enter Name")
+        self.name_input.setStyleSheet("""
+            QLineEdit {
+                background-color: #ecf0f1;
+                border: 2px solid #3498db;
+                border-radius: 10px;
+                padding: 10px;
+                color: #2C3E50;
+                font-size: 16px;
+            }
+            QLineEdit:focus {
+                border-color: #2980b9;
+                background-color: #ffffff;
+            }
+        """)
+        form_layout.addWidget(QLabel("Name:"))
+        form_layout.addWidget(self.name_input)
 
-# Main application class
-class MultiPageApp(tk.Tk):  # Define a class that inherits from tk.Tk to create the main app window
-    def __init__(self):  # Initialize the constructor for the MultiPageApp class
-        super().__init__()  # Call the constructor of the parent class (tk.Tk) to initialize the window
+        self.university_input = QLineEdit(self)
+        self.university_input.setPlaceholderText("Enter University")
+        self.university_input.setStyleSheet("""
+            QLineEdit {
+                background-color: #ecf0f1;
+                border: 2px solid #3498db;
+                border-radius: 10px;
+                padding: 10px;
+                color: #2C3E50;
+                font-size: 16px;
+            }
+            QLineEdit:focus {
+                border-color: #2980b9;
+                background-color: #ffffff;
+            }
+        """)
+        form_layout.addWidget(QLabel("University:"))
+        form_layout.addWidget(self.university_input)
 
-        self.title("Student Result Form")  # Set the title of the window
-        self.geometry("850x650")  # Define the dimensions of the window (850px by 650px)
-        self.configure(bg="white")  # Set the background color of the window to white
+        self.department_input = QLineEdit(self)
+        self.department_input.setPlaceholderText("Enter Department")
+        self.department_input.setStyleSheet("""
+            QLineEdit {
+                background-color: #ecf0f1;
+                border: 2px solid #3498db;
+                border-radius: 10px;
+                padding: 10px;
+                color: #2C3E50;
+                font-size: 16px;
+            }
+            QLineEdit:focus {
+                border-color: #2980b9;
+                background-color: #ffffff;
+            }
+        """)
+        form_layout.addWidget(QLabel("Department:"))
+        form_layout.addWidget(self.department_input)
 
-        # Set the minimum window size to 850x650 pixels to prevent resizing smaller
-        self.wm_minsize(850, 650)  
+        self.strength_input = QLineEdit(self)
+        self.strength_input.setPlaceholderText("Enter Strength of Class")
+        self.strength_input.setStyleSheet("""
+            QLineEdit {
+                background-color: #ecf0f1;
+                border: 2px solid #3498db;
+                border-radius: 10px;
+                padding: 10px;
+                color: #2C3E50;
+                font-size: 16px;
+            }
+            QLineEdit:focus {
+                border-color: #2980b9;
+                background-color: #ffffff;
+            }
+        """)
+        form_layout.addWidget(QLabel("Strength of Class:"))
+        form_layout.addWidget(self.strength_input)
 
-        # Initialize the frames for different pages (page1, page2, and page3)
-        self.page1 = tk.Frame(self)  # Create a Frame widget for page1
-        self.page2 = tk.Frame(self)  # Create a Frame widget for page2
-        self.page3 = tk.Frame(self)  # Create a Frame widget for page3
+        self.section_input = QLineEdit(self)
+        self.section_input.setPlaceholderText("Enter Section")
+        self.section_input.setStyleSheet("""
+            QLineEdit {
+                background-color: #ecf0f1;
+                border: 2px solid #3498db;
+                border-radius: 10px;
+                padding: 10px;
+                color: #2C3E50;
+                font-size: 16px;
+            }
+            QLineEdit:focus {
+                border-color: #2980b9;
+                background-color: #ffffff;
+            }
+        """)
+        form_layout.addWidget(QLabel("Section:"))
+        form_layout.addWidget(self.section_input)
 
-        self.setup_menubar()  # Call the setup_menubar method to create a menubar for the app
-        self.setup_page1()  # Call the setup_page1 method to set up the first page
-        self.setup_page2()  # Call the setup_page2 method to set up the second page
-        self.setup_page3()  # Call the setup_page3 method to set up the third page
+        layout.addLayout(form_layout)
 
-        self.show_page1()  # Display the first page by default when the app starts
+        # Create "Create Result File" button at center
+        create_button = QPushButton("Create Result File", self)
+        self.setStyleSheet("""
+            QPushButton {
+                background-color: #3498db;
+                color: white;
+                border-radius: 10px;
+                font-size: 16px;
+                padding: 15px;
+                border: none;
+            }
+            QPushButton:hover {
+                background-color: #2980b9;
+            }
+            QPushButton:pressed {
+                background-color: #1f618d;
+            }
+        """)
+        create_button.clicked.connect(self.create_result_file)
 
-    def setup_menubar(self):  # Define the setup_menubar method
-        """Setup the menubar with options."""  # Comment explaining the purpose of this method
-        menubar = tk.Menu(self)  # Create a menubar widget
+        layout.addWidget(create_button, alignment=Qt.AlignCenter)  # Center the button
 
+        self.setLayout(layout)
 
-        # File Menu
-        file_menu = tk.Menu(menubar, tearoff=0)  # Create a menu for file options (tearoff=0 disables tearing off the menu)
-        file_menu.add_command(label="Exit", command=self.quit)  # Add an "Exit" option that will close the application when selected
-        menubar.add_cascade(label="File", menu=file_menu)  # Add the file_menu to the menubar with the label "File"
+    def go_back(self):
+        self.window().show_page(0)  # Go back to the main page
 
-        # Help Menu 
-        help_menu = tk.Menu(menubar, tearoff=0)  # Create a menu for help options (tearoff=0 disables tearing off the menu)
-        help_menu.add_command(label="About", command=self.show_about)  # Add an "About" option that will show an about message when selected
-        menubar.add_cascade(label="Help", menu=help_menu)  # Add the help_menu to the menubar with the label "Help"
-
-        # Add the menubar to the window  # Comment indicating that the menubar is being added to the window
-        self.config(menu=menubar)  # Configure the main window to display the menubar
-
-    def show_about(self):  # Define the method to show the "About" information
-        """Display an About messagebox."""  # Comment explaining the method's functionality
-        webbrowser.open("about.html")  # Open the "about.html" file in the default web browser when the "About" menu is clicked
-
-    def show_page1(self):  # Define the method to display the first page (page1)
-        self.page1.pack(fill="both", expand=True)  # Pack the page1 frame into the window to make it visible (expand to fill available space)
-        self.page2.pack_forget()  # Hide the page2 frame if it's currently displayed
-        self.page3.pack_forget()  # Hide the page3 frame if it's currently displayed
-
-    def show_page2(self):  # Define the method to display the second page (page2)
-        self.page1.pack_forget()  # Hide the page1 frame if it's currently displayed
-        self.page2.pack(fill="both", expand=True)  # Pack the page2 frame into the window to make it visible
-        self.page3.pack_forget()  # Hide the page3 frame if it's currently displayed
-
-    def show_page3(self):  # Define the method to display the third page (page3)
-        self.page1.pack_forget()  # Hide the page1 frame if it's currently displayed
-        self.page2.pack_forget()  # Hide the page2 frame if it's currently displayed
-        self.page3.pack(fill="both", expand=True)  # Pack the page3 frame into the window to make it visible
-
-
-
-
-
-
-
-    def CreateResult(self):
+    def create_result_file(self):
         """Create result file and save details."""
-        # Try Method to Handle Unexpected Errors
         try:
-            # Validating that no feild is empty
-            if self.resultname_entry.get()!="" and self.uni_entry.get()!="" and self.dep_entry.get()!="" and self.strength_entry.get()!="" and self.section_entry.get()!="":
-                # Validating that the data given is textboxes is correct.
-                if self.strength_entry.get().isdigit() and self.resultname_entry.get().isalpha() and self.uni_entry.get().isalpha() and self.dep_entry.get().isalpha() and self.strength_entry.get().isalpha():
-                    # Checking if there is already a Result Folder or not
-                    if not os.path.isdir("Resultcards/" + self.resultname_entry.get()):  
-                        os.mkdir("Resultcards/" + self.resultname_entry.get())  # Create a new Result Folder
-                        # Creating a new file details.uet in Results Folder
-                        with open("Resultcards/" + self.resultname_entry.get() + "/details.uet", "x") as r:
-                            # Writing Data in detials.uet file
-                            r.write(self.uni_entry.get() + "\n" + self.dep_entry.get() + "\n" + self.strength_entry.get() + "\n" + self.section_entry.get())
-                        with open("currentproject.uet","w") as r:   # Opening currentproject.uet file
-                            r.write(self.resultname_entry.get())    # Reading Result File Name from currentproject.uet file
-                        messagebox.showinfo("Info","Result file created successfully.")
-                        self.show_page2()   # Displaying Page 2
+            # Validation to ensure that no field is empty
+            if (self.name_input.text() != "" and
+                self.university_input.text() != "" and
+                self.department_input.text() != "" and
+                self.strength_input.text() != "" and
+                self.section_input.text() != ""):
+                
+                # Validating that the data entered is correct
+                if (self.strength_input.text().isdigit() and
+                    self.name_input.text().isalpha() and
+                    self.university_input.text().isalpha() and
+                    self.department_input.text().isalpha() and
+                    self.section_input.text().isalpha()):
+                    
+                    # Check if the result folder already exists
+                    result_folder = f"Resultcards/{self.name_input.text()}"
+                    if not os.path.isdir(result_folder):
+                        os.mkdir(result_folder)  # Create a new result folder
+                        
+                        # Create the details.uet file and write data
+                        with open(f"{result_folder}/details.uet", "x") as r:
+                            r.write(f"{self.university_input.text()}\n{self.department_input.text()}\n{self.strength_input.text()}\n{self.section_input.text()}")
+                        
+                        # Writing the current result name to currentproject.uet file
+                        with open("currentproject.uet", "w") as r:
+                            r.write(self.name_input.text())
+                        
+                        # Show success message
+                        QMessageBox.information(self, "Info", "Result file created successfully.")
+                        
+                        # Call the function to move to the next page (not implemented here)
+                        self.showpage(1)  # Make sure you define this method in your class
                     else:
-                        messagebox.showerror("Error","Result file already exists.")
+                        QMessageBox.critical(self, "Error", "Result file already exists.")
                 else:
-                    messagebox.showerror("Error","Please enter valid input.")
+                    QMessageBox.critical(self, "Error", "Please enter valid input.")
             else:
-                messagebox.showerror("Error","Please fill all the feilds.")
-        except ValueError:
-            messagebox.showerror("Error",ValueError)
-
-
-
-
-    def setup_page3(self):  # Define the setup method for the third page
-        """Setup Page 1 (Main menu) with buttons"""  # Comment describing the purpose of this method
-        self.page3.configure(bg="white")  # Set the background color of page3 to white
-
-        # Modern header section for the page
-        header_frame = tk.Frame(self.page3, bg="#2980b9", pady=10)  # Create a frame for the header with a blue background and padding
-        header_frame.pack(fill="x")  # Pack the header frame horizontally across the window
-        ttk.Label(header_frame, text="Create Result File", font=("Arial", 22, "bold"), foreground="white", background="#2980b9").pack()  # Create a label with white text on a blue background inside the header frame
-
-        # Create the form frame where user input fields will be placed
-        form_frame = tk.Frame(self.page3, bg="#ffffff")  # Create a frame for the form with a white background
-        form_frame.pack(pady=20)  # Pack the form frame with vertical padding of 20
-
-        # Create and position the "Name" label and entry field
-        ttk.Label(form_frame, text="Name:", font=("Arial", 12), background="white").grid(row=0, column=0, sticky="e", padx=20, pady=10)  # Label with text "Name" aligned to the right
-        self.resultname_entry = self.create_modern_entry(form_frame)  # Create an entry widget for "Name"
-        self.resultname_entry.grid(row=0, column=1, padx=20, pady=10)  # Place the entry widget in the grid at row 0, column 1
-
-        # Create and position the "University" label and entry field
-        ttk.Label(form_frame, text="University:", font=("Arial", 12), background="white").grid(row=1, column=0, sticky="e", padx=20, pady=10)  # Label with text "University"
-        self.uni_entry = self.create_modern_entry(form_frame)  # Create an entry widget for "University"
-        self.uni_entry.grid(row=1, column=1, padx=20, pady=10)  # Place the entry widget in the grid at row 1, column 1
-
-        # Create and position the "Department" label and entry field
-        ttk.Label(form_frame, text="Department:", font=("Arial", 12), background="white").grid(row=2, column=0, sticky="e", padx=20, pady=10)  # Label with text "Department"
-        self.dep_entry = self.create_modern_entry(form_frame)  # Create an entry widget for "Department"
-        self.dep_entry.grid(row=2, column=1, padx=20, pady=10)  # Place the entry widget in the grid at row 2, column 1
-
-        # Create and position the "Strength of Class" label and entry field
-        ttk.Label(form_frame, text="Strength of Class:", font=("Arial", 12), background="white").grid(row=3, column=0, sticky="e", padx=20, pady=10)  # Label with text "Strength of Class"
-        self.strength_entry = self.create_modern_entry(form_frame)  # Create an entry widget for "Strength of Class"
-        self.strength_entry.grid(row=3, column=1, padx=20, pady=10)  # Place the entry widget in the grid at row 3, column 1
-
-        # Create and position the "Section" label and entry field
-        ttk.Label(form_frame, text="Section:", font=("Arial", 12), background="white").grid(row=4, column=0, sticky="e", padx=20, pady=10)  # Label with text "Section"
-        self.section_entry = self.create_modern_entry(form_frame)  # Create an entry widget for "Section"
-        self.section_entry.grid(row=4, column=1, padx=20, pady=10)  # Place the entry widget in the grid at row 4, column 1
-
-        # Create and position the "Create Result" button
-        self.create_button = self.create_modern_button(self.page3, "Create Result", command=self.CreateResult)  # Create a button with the text "Create Result" and bind the action to the CreateResult method
-        self.create_button.pack(pady=20, padx=50, fill='x')  # Pack the button with vertical padding of 20, horizontal padding of 50, and make it fill the width of the window
-
-
-
-
-
-
-
-
-
-
-
-    def setup_page1(self):
-        """Setup Page 1 (Main menu) with buttons"""
+                print("False")
+                QMessageBox.critical(self, "Error", "Please fill all the fields.")
         
-        # Header
-        ttk.Label(self.page1, text="Student Result Form", font=("Arial", 24, "bold")).pack(pady=20)
-
-        # Create Buttons for navigation with modern styles
-        self.create_button = self.create_modern_button(self.page1, "Create Result", self.show_page3)
-        self.create_button.pack(pady=20, padx=50, fill='x')
-
-        # Another button with placeholder
-        self.view_button = self.create_modern_button(self.page1, "Continue Adding Results", command=self.show_page2)
-        self.view_button.pack(pady=20, padx=50, fill='x')
-
-        # Another button with placeholder
-        self.view_button = self.create_modern_button(self.page1, "List of results created", command=self.show_page2)
-        self.view_button.pack(pady=20, padx=50, fill='x')
+        except ValueError as e:
+            QMessageBox.critical(self, "Error", f"Value Error: {str(e)}")
 
 
+class Page2(QWidget):
+    def __init__(self):
+        super().__init__()
 
+        # Layout for Page2
+        layout = QVBoxLayout()
 
+        # Top layout for Go Back button and title
+        top_layout = QHBoxLayout()
 
-    def create_modern_button(self, parent, text, command):  # Define the method to create a modern-styled button
-        """Creates a modern-styled button"""  # Comment describing the method
-        button = ttk.Button(parent, text=text, command=command)  # Create the button with the provided text and command
-        style = ttk.Style()  # Create a Style object to customize the appearance of the button
-        style.configure("TButton",  # Configure the button's style
-                        font=("Arial", 14, "bold"),  # Set the font to Arial, size 14, bold
-                        padding=15,  # Add padding inside the button
-                        relief="flat",  # Remove the default border (flat relief)
-                        width=20,  # Set the button width to 20 characters
-                        background="#2980b9",  # Set the background color to a shade of blue
-                        foreground="#2980b9")  # Set the text color to the same blue
-        button.configure(style="TButton")  # Apply the "TButton" style to the button
+        # Go back button
+        go_back_button = QPushButton("Go Back", self)
+        go_back_button.setStyleSheet("""
+            QPushButton {
+                background-color: #e74c3c;
+                color: white;
+                font-size: 14px;
+                padding: 10px;
+                border: none;
+                border-radius: 5px;
+            }
+            QPushButton:hover {
+                background-color: #c0392b;
+            }
+        """)
+        go_back_button.clicked.connect(self.go_back)
 
-        style.configure("TButtonHover",
-                        background="#3498db",  # Set a lighter blue background when hovered
-                        foreground="white")  # Set the text color to white on hover
-        button.configure(style="TButton")
-        style.configure("Custom.TCheckbutton", background="white", font=("Arial", 16))  # Configure a custom style for Checkbuttons (unused here)
+        # Add Go Back button to top left
+        top_layout.addWidget(go_back_button)
 
-        # Custom Button Hover Effect
-        button.bind("<Enter>", lambda e: self.on_hover(button))  # Bind the <Enter> event to trigger the hover effect
-        button.bind("<Leave>", lambda e: self.on_leave(button))  # Bind the <Leave> event to revert the hover effect
+        # Add modern title label at the top center
+        title_label = QLabel("Enter Result Details", self)
+        title_label.setAlignment(Qt.AlignCenter)
+        title_label.setFont(QFont("Arial", 20, QFont.Bold))
+        title_label.setStyleSheet("color: #2C3E50; margin-bottom: 30px;")
 
-        return button  # Return the button object
+        # Spacer to center the title label
+        top_layout.addSpacerItem(QSpacerItem(40, 20, QSizePolicy.Expanding, QSizePolicy.Minimum))
+        top_layout.addWidget(title_label, alignment=Qt.AlignCenter)
+        top_layout.addSpacerItem(QSpacerItem(40, 20, QSizePolicy.Expanding, QSizePolicy.Minimum))
 
-    def on_hover(self, button):  # Define the method to handle the hover effect
-        """Change button background color on hover"""  # Comment describing the hover effect method
-        button.configure(style="TButtonHover")  # Change the button's style to "TButtonHover" when hovered
+        layout.addLayout(top_layout)
 
-    def on_leave(self, button):  # Define the method to revert the hover effect
-        """Revert button background color when not hovered"""  # Comment explaining the revert action
-        button.configure(style="TButton")  # Revert the button's style back to the default "TButton" when the hover ends
+        # Create layout for form inputs
+        form_layout = QVBoxLayout()
 
+        # Create labels and inputs for Name, Roll No., and each subject
+        self.name_input = self.create_input_field("Enter Name")
+        self.rollno_input = self.create_input_field("Enter Roll No.")
+        
+        # For each subject, create two text boxes in the same row: obtained marks and total marks
+        self.aict_obtain_input = self.create_input_field("AICT Obtained Marks")
+        self.aict_total_input = self.create_input_field("AICT Total Marks")
 
+        self.pf_obtain_input = self.create_input_field("PF Obtained Marks")
+        self.pf_total_input = self.create_input_field("PF Total Marks")
 
+        self.dm_obtain_input = self.create_input_field("DM Obtained Marks")
+        self.dm_total_input = self.create_input_field("DM Total Marks")
 
+        self.ap_obtain_input = self.create_input_field("AP Obtained Marks")
+        self.ap_total_input = self.create_input_field("AP Total Marks")
 
+        self.calculus_obtain_input = self.create_input_field("Calculus Obtained Marks")
+        self.calculus_total_input = self.create_input_field("Calculus Total Marks")
 
-    
+        # Add all the form fields
+        form_layout.addWidget(QLabel("Name:"))
+        form_layout.addWidget(self.name_input)
 
+        form_layout.addWidget(QLabel("Roll No:"))
+        form_layout.addWidget(self.rollno_input)
 
+        form_layout.addWidget(QLabel("AICT Marks:"))
+        form_layout.addLayout(self.create_row(self.aict_obtain_input, self.aict_total_input))
 
+        form_layout.addWidget(QLabel("PF Marks:"))
+        form_layout.addLayout(self.create_row(self.pf_obtain_input, self.pf_total_input))
 
+        form_layout.addWidget(QLabel("DM Marks:"))
+        form_layout.addLayout(self.create_row(self.dm_obtain_input, self.dm_total_input))
 
+        form_layout.addWidget(QLabel("AP Marks:"))
+        form_layout.addLayout(self.create_row(self.ap_obtain_input, self.ap_total_input))
 
+        form_layout.addWidget(QLabel("Calculus Marks:"))
+        form_layout.addLayout(self.create_row(self.calculus_obtain_input, self.calculus_total_input))
 
+        # Checkbox for opening the result file after creating
+        self.open_result_checkbox = QCheckBox("Open result file after creating", self)
+        form_layout.addWidget(self.open_result_checkbox)
 
-    def setup_page2(self):
-        """Setup Page 2 (Form page)"""
-        self.page2.configure(bg="white")
-        # Modern header
-        header_frame = tk.Frame(self.page2, bg="#2980b9", pady=10)
-        header_frame.pack(fill="x")
-        ttk.Label(header_frame, text="Create Student Result", font=("Arial", 22, "bold"), foreground="white", background="#2980b9").pack()
+        # Create "Create Results" button
+        create_results_button = ModernButton("Create Results", self)
+        create_results_button.clicked.connect(self.create_results)
+        form_layout.addWidget(create_results_button)
 
-        # Form layout with a modern feel
-        form_frame = tk.Frame(self.page2, bg="#ffffff")
-        form_frame.pack(pady=20)
+        layout.addLayout(form_layout)
 
-        # Name
-        ttk.Label(form_frame, text="Name:", font=("Arial", 12), background="white").grid(row=0, column=0, sticky="e", padx=20, pady=10)
-        self.name_entry = self.create_modern_entry(form_frame)
-        self.name_entry.grid(row=0, column=1, padx=20, pady=10)
+        self.setLayout(layout)
 
-        # Roll No
-        ttk.Label(form_frame, text="Roll No:", font=("Arial", 12), background="white").grid(row=3, column=0, sticky="e", padx=20, pady=10)
-        self.roll_no_entry = self.create_modern_entry(form_frame)
-        self.roll_no_entry.grid(row=3, column=1, padx=20, pady=10)
+    def create_input_field(self, placeholder):
+        """Helper method to create styled QLineEdit."""
+        line_edit = QLineEdit(self)
+        line_edit.setPlaceholderText(placeholder)
+        line_edit.setStyleSheet("""
+            QLineEdit {
+                background-color: #ecf0f1;
+                border: 2px solid #3498db;
+                border-radius: 10px;
+                padding: 10px;
+                color: #2C3E50;
+                font-size: 16px;
+            }
+            QLineEdit:focus {
+                border-color: #2980b9;
+                background-color: #ffffff;
+            }
+        """)
+        return line_edit
 
-        # Subject Marks
-        self.create_marks_input(form_frame)
+    def create_row(self, obtained_input, total_input):
+        """Helper method to create a horizontal layout with two inputs in the same row."""
+        row_layout = QHBoxLayout()
+        row_layout.addWidget(obtained_input)
+        row_layout.addWidget(total_input)
+        return row_layout
 
-
-        self.var = tk.IntVar()
-        style = ttk.Style()
-        style.configure("TCheckbutton",
-                    background="white",  # Set the background to white
-                    font=("Arial", 16))   # Set the font style
-
-        # Create the checkbox with the customized style
-        checkbox = ttk.Checkbutton(form_frame, text="Open result after creating", variable=self.var, style="TCheckbutton")
-        checkbox.grid(row=10, column=0, columnspan=2, padx=20, pady=10, sticky="w")
-
-        # Create Result Button with modern styling
-        self.create_button = self.create_modern_button(self.page2, "Create Result",command=self.CreateFile)
-        self.create_button.pack(pady=20, padx=50, fill='x')
-
-    def create_modern_entry(self, parent):
-        """Create a modern-styled entry (textbox)"""
-        entry = ttk.Entry(parent, font=("Arial", 12), width=30)
-        entry.configure(style="TEntry")
-
-        # Add internal padding for a better look
-        entry.grid(ipadx=10, ipady=5)
-
-        return entry
-
-    def create_marks_input(self, form_frame):
-        subjects = ["AICT", "PF", "AP", "DM", "Calculus"]
-        for i, subject in enumerate(subjects):
-            ttk.Label(form_frame, text=f"{subject} Marks:", font=("Arial", 12), background="white").grid(row=4 + i, column=0, sticky="e", padx=20, pady=10)
-            obtained_entry = self.create_modern_entry(form_frame)
-            obtained_entry.grid(row=4 + i, column=1, padx=10, pady=10)
-
-            total_entry = self.create_modern_entry(form_frame)
-            total_entry.grid(row=4 + i, column=2, padx=10, pady=10)
-
-            setattr(self, f"{subject.lower()}_obtained_entry", obtained_entry)
-            setattr(self, f"{subject.lower()}_total_entry", total_entry)
 
     def grade(self,obtain,total):
         percentage = (int(obtain)/int(total))*100
@@ -334,7 +389,7 @@ class MultiPageApp(tk.Tk):  # Define a class that inherits from tk.Tk to create 
             return "E"
         elif percentage<50:
             return "F"
-        
+
     def comments(self,name,percentage):
         if percentage>=90:
             return f"Congratulations on achieving an A grade, {name}! Your dedication, hard work, and commitment to excellence are clearly reflected in your performance. Keep up the fantastic effort, and continue striving for greatness in all that you do."
@@ -349,16 +404,16 @@ class MultiPageApp(tk.Tk):  # Define a class that inherits from tk.Tk to create 
         elif percentage<50:
             return f"{name}, your performance this term was below expectations, with significant gaps in understanding the material. I recommend seeking extra help or tutoring to address these challenges. With more effort and support, you can improve. Please take this opportunity to focus on your learning and reach out for assistance."
 
-    def CreateFile(self):
-        """Create result file and save details."""
+
+    def create_results(self):
         try:
             #Validation to ensure that no textbox is empty
-            if self.name_entry.get().isalpha() and self.roll_no_entry.get().isdigit() and self.aict_obtained_entry.get().isdigit() and self.aict_total_entry.get().isdigit() and self.pf_obtained_entry.get().isdigit() and self.pf_total_entry.get().isdigit() and self.ap_obtained_entry.get().isdigit() and self.ap_total_entry.get().isdigit() and self.dm_obtained_entry.get().isdigit() and self.dm_total_entry.get().isdigit() and self.calculus_obtained_entry.get().isdigit() and self.calculus_total_entry.get().isdigit():
+            if self.name_input.text().isalpha() and self.rollno_input.text().isdigit() and self.aict_obtain_input.text().isdigit() and self.aict_total_input.text().isdigit() and self.pf_obtain_input.text().isdigit() and self.pf_total_input.text().isdigit() and self.ap_obtain_input.text().isdigit() and self.ap_total_input.text().isdigit() and self.dm_obtain_input.text().isdigit() and self.dm_total_input.text().isdigit() and self.calculus_obtain_input.text().isdigit() and self.calculus_total_input.text().isdigit():
                 # Ensuring that the input is valid
-                if int(self.aict_obtained_entry.get())<=int(self.aict_total_entry.get()) and int(self.pf_obtained_entry.get())<=int(self.pf_total_entry.get()) and int(self.ap_obtained_entry.get())<=int(self.ap_total_entry.get()) and int(self.dm_obtained_entry.get())<=int(self.dm_total_entry.get()) and int(self.calculus_obtained_entry.get())<=int(self.calculus_total_entry.get()):
+                if int(self.aict_obtain_input.text())<=int(self.aict_total_input.text()) and int(self.pf_obtain_input.text())<=int(self.pf_total_input.text()) and int(self.ap_obtain_input.text())<=int(self.ap_total_input.text()) and int(self.dm_obtain_input.text())<=int(self.dm_total_input.text()) and int(self.calculus_obtain_input.text())<=int(self.calculus_total_input.text()):
                     # Calculating Total Obtained and Max Marks
-                    obtain_marks = int(self.aict_obtained_entry.get()) + int(self.pf_obtained_entry.get()) + int(self.ap_obtained_entry.get()) + int(self.dm_obtained_entry.get()) + int(self.calculus_obtained_entry.get())
-                    total_marks = int(self.aict_total_entry.get()) + int(self.pf_total_entry.get()) + int(self.ap_total_entry.get()) + int(self.dm_total_entry.get()) + int(self.calculus_total_entry.get())
+                    obtain_marks = int(self.aict_obtain_input.text()) + int(self.pf_obtain_input.text()) + int(self.ap_obtain_input.text()) + int(self.dm_obtain_input.text()) + int(self.calculus_obtain_input.text())
+                    total_marks = int(self.aict_total_input.text()) + int(self.pf_total_input.text()) + int(self.ap_total_input.text()) + int(self.dm_total_input.text()) + int(self.calculus_total_input.text())
                     # Opening currentproject.uet file in order to get the name of result file we are currently working on
                     with open("currentproject.uet","r") as r:
                         result_name = r.read()
@@ -367,48 +422,243 @@ class MultiPageApp(tk.Tk):  # Define a class that inherits from tk.Tk to create 
                             details = d.read().split("\n")  # Converting Details in the form of list
                             print(details)
                         # Copying Result Source from current directory to Results Folder
-                        shutil.copy("source.mb","Resultcards/"+ result_name + "/" + self.name_entry.get()+".html")
+                        shutil.copy("source.mb","Resultcards/"+ result_name + "/" + self.name_input.text()+".html")
                         # Opening File in Read/Write Format to remove previous content and adding the updated one.
-                        with open("Resultcards/"+result_name + "/" +self.name_entry.get()+".html","r+") as s:
+                        with open("Resultcards/"+result_name + "/" +self.name_input.text()+".html","r+") as s:
                             before = s.read()
                             # Replacing Dummy Text with Actual Data for HTML file
                             after = before.replace("<uni-name>",details[0])\
-                                            .replace("<std-name>",self.name_entry.get())\
+                                            .replace("<std-name>",self.name_input.text())\
                                             .replace("<sect-ion>",details[3])\
                                             .replace("<department>",details[1])\
                                             .replace("<roll-no>",details[2])\
                                             .replace("<total-marks>",str(total_marks))\
                                             .replace("<percentage-total>",str(int((obtain_marks/total_marks)*100))+"%")\
                                             .replace("<grade-total>",self.grade(obtain_marks,total_marks))\
-                                            .replace("<aict-obtain>",self.aict_obtained_entry.get())\
-                                            .replace("<aict-total>",self.aict_total_entry.get())\
-                                            .replace("<aict-grade>",self.grade(self.aict_obtained_entry.get(),self.aict_total_entry.get()))\
-                                            .replace("<pf-obtain>",self.pf_obtained_entry.get())\
-                                            .replace("<pf-total>",self.pf_total_entry.get())\
-                                            .replace("<pf-grade>",self.grade(self.pf_obtained_entry.get(),self.pf_total_entry.get()))\
-                                            .replace("<ap-obtain>",self.ap_obtained_entry.get())\
-                                            .replace("<ap-total>",self.ap_total_entry.get())\
-                                            .replace("<ap-grade>",self.grade(self.ap_obtained_entry.get(),self.ap_total_entry.get()))\
-                                            .replace("<dm-obtain>",self.dm_obtained_entry.get())\
-                                            .replace("<dm-total>",self.dm_total_entry.get())\
-                                            .replace("<dm-grade>",self.grade(self.dm_obtained_entry.get(),self.dm_total_entry.get()))\
-                                            .replace("<calculus-obtain>",self.calculus_obtained_entry.get())\
-                                            .replace("<calculus-total>",self.calculus_total_entry.get())\
-                                            .replace("<calculus-grade>",self.grade(self.calculus_obtained_entry.get(),self.calculus_total_entry.get()))\
-                                            .replace("<comments>",self.comments(self.name_entry.get(),(obtain_marks/total_marks)*100))
+                                            .replace("<aict-obtain>",self.aict_obtain_input.text())\
+                                            .replace("<aict-total>",self.aict_total_input.text())\
+                                            .replace("<aict-grade>",self.grade(self.aict_obtain_input.text(),self.aict_total_input.text()))\
+                                            .replace("<pf-obtain>",self.pf_obtain_input.text())\
+                                            .replace("<pf-total>",self.pf_total_input.text())\
+                                            .replace("<pf-grade>",self.grade(self.pf_obtain_input.text(),self.pf_total_input.text()))\
+                                            .replace("<ap-obtain>",self.ap_obtain_input.text())\
+                                            .replace("<ap-total>",self.ap_total_input.text())\
+                                            .replace("<ap-grade>",self.grade(self.ap_obtain_input.text(),self.ap_total_input.text()))\
+                                            .replace("<dm-obtain>",self.dm_obtain_input.text())\
+                                            .replace("<dm-total>",self.dm_total_input.text())\
+                                            .replace("<dm-grade>",self.grade(self.dm_obtain_input.text(),self.dm_total_input.text()))\
+                                            .replace("<calculus-obtain>",self.calculus_obtain_input.text())\
+                                            .replace("<calculus-total>",self.calculus_total_input.text())\
+                                            .replace("<calculus-grade>",self.grade(self.calculus_obtain_input.text(),self.calculus_total_input.text()))\
+                                            .replace("<comments>",self.comments(self.name_input.text(),(obtain_marks/total_marks)*100))
                             print(after)
                             s.seek(0)  # Move cursor back to the beginning of the file
                             s.write(after)  # Write modified content
-                            if self.var.get():
-                                webbrowser.open(os.path.dirname(os.path.abspath(__file__)) + "/" + "Resultcards/"+result_name + "/" +self.name_entry.get()+".html")
+                            if self.open_result_checkbox.isChecked():
+                                webbrowser.open(os.path.dirname(os.path.abspath(__file__)) + "/" + "Resultcards/"+result_name + "/" +self.name_input.text()+".html")
                 else:
-                    messagebox.showerror("Error","Obtained Marks cannot be greater than total marks.")
+                    QMessageBox.critical(self,"Error","Obtained Marks cannot be greater than total marks.")
             else:
-                messagebox.showerror("Error","Please enter valid input")
+                print("False")
+                QMessageBox.critical(self,"Error","Please enter valid input")
         except ValueError:
-            messagebox.showerror("Error",ValueError)
+            QMessageBox.critical(self,"Error",ValueError)
+
+    def go_back(self):
+            self.window().show_page(0)  # Go back to the main page
+
+
+class Page3(QWidget):
+    def __init__(self):
+        super().__init__()
+
+        # Layout for Page3
+        layout = QVBoxLayout()
+
+        # Top layout for Go Back button and title
+        top_layout = QHBoxLayout()
+
+        # Go back button
+        go_back_button = QPushButton("Go Back", self)
+        go_back_button.setStyleSheet("""
+            QPushButton {
+                background-color: #e74c3c;
+                color: white;
+                font-size: 14px;
+                padding: 10px;
+                border: none;
+                border-radius: 5px;
+            }
+            QPushButton:hover {
+                background-color: #c0392b;
+            }
+        """)
+        go_back_button.clicked.connect(self.go_back)
+
+        # Add Go Back button to top left
+        top_layout.addWidget(go_back_button)
+
+        # Add modern title label at the top center
+        title_label = QLabel("Lists of Results Created", self)
+        title_label.setAlignment(Qt.AlignCenter)
+        title_label.setFont(QFont("Arial", 20, QFont.Bold))
+        title_label.setStyleSheet("color: #2C3E50; margin-bottom: 30px;")
+
+        # Spacer to center the title label
+        top_layout.addSpacerItem(QSpacerItem(40, 20, QSizePolicy.Expanding, QSizePolicy.Minimum))
+        top_layout.addWidget(title_label, alignment=Qt.AlignCenter)
+        top_layout.addSpacerItem(QSpacerItem(40, 20, QSizePolicy.Expanding, QSizePolicy.Minimum))
+
+        layout.addLayout(top_layout)
+
+        # Add the page-specific content
+        layout.addWidget(QLabel("This page displays the list of results created.", self))
+
+        self.setLayout(layout)
+
+    def go_back(self):
+        self.window().show_page(0)  # Go back to the main page
+
+class MainPage(QWidget):
+    def __init__(self):
+        super().__init__()
+
+        # Create the main layout
+        layout = QVBoxLayout(self)
+
+        # Add a title label
+        title_label = QLabel("Students Result Manager", self)
+        title_label.setAlignment(Qt.AlignCenter)
+        title_label.setFont(QFont("Arial", 24, QFont.Bold))
+        title_label.setStyleSheet("color: #2C3E50; margin-bottom: 30px;")
+        layout.addWidget(title_label)
+
+        # Create button layout
+        button_layout = QHBoxLayout()
+
+        # Add left spacer to push buttons to the center with space on both sides
+        button_layout.addSpacerItem(QSpacerItem(40, 20, QSizePolicy.Expanding, QSizePolicy.Minimum))
+
+        # Create 3 modern buttons
+        button1 = ModernButton("Create Results File", self)
+        button2 = ModernButton("Continue adding results", self)
+        button3 = ModernButton("Lists of Results Created", self)
+
+        button_layout.addWidget(button1)
+        button_layout.addWidget(button2)
+        button_layout.addWidget(button3)
+
+        # Add right spacer to push buttons to the center with space on both sides
+        button_layout.addSpacerItem(QSpacerItem(40, 20, QSizePolicy.Expanding, QSizePolicy.Minimum))
+
+        layout.addLayout(button_layout)
+
+        # Connect buttons to page navigation
+        button1.clicked.connect(self.show_page1)
+        button2.clicked.connect(self.validate_page2)
+        button3.clicked.connect(self.show_page3)
+
+    def validate_page2(self):
+        with open("currentproject.uet","r") as r:
+            if r.read().replace(" ","") == "":
+                QMessageBox.information(self,"Error","Please Create Result File First.")
+            elif not os.path.isfile(f"Resultcards/{r.read()}/details.uet"):
+                QMessageBox.information(self,"Error","Current result file is missing or corrupt. Please create a new result file.")
+            else:
+                self.show_page2()
+
+    def show_page1(self):
+        self.window().show_page(1)  # Tell the parent window to switch to Page1
+
+    def show_page2(self):
+        self.window().show_page(2)  # Tell the parent window to switch to Page2
+
+    def show_page3(self):
+        self.window().show_page(3)  # Tell the parent window to switch to Page3
+
+class MainWindow(QMainWindow):
+    def __init__(self):
+        super().__init__()
+
+        # Set window properties
+        self.setWindowTitle("Students Result Manager")
+        self.setGeometry(200, 200, 800, 500)
+
+        # Set font
+        font = QFont("Arial", 14)
+        self.setFont(font)
+
+        # Create menu bar
+        self.create_menu()
+
+        # Set up central widget and layout
+        central_widget = QWidget(self)
+        self.setCentralWidget(central_widget)
+
+        # Create stacked widget for page navigation
+        self.stacked_widget = QStackedWidget(self)
+        central_widget.setLayout(QVBoxLayout())
+        central_widget.layout().addWidget(self.stacked_widget)
+
+        # Create pages
+        self.main_page = MainPage()
+        self.page1 = Page1()
+        self.page2 = Page2()
+        self.page3 = Page3()
+
+        # Add pages to stacked widget
+        self.stacked_widget.addWidget(self.main_page)  # First page is the main page
+        self.stacked_widget.addWidget(self.page1)
+        self.stacked_widget.addWidget(self.page2)
+        self.stacked_widget.addWidget(self.page3)
+
+        # Display the main page initially
+        self.show_page(0)
+
+    def create_menu(self):
+        # Menu bar with modern style
+        menubar = self.menuBar()
+        menubar.setStyleSheet("""
+            QMenuBar {
+                background-color: #2C3E50;
+                color: white;
+            }
+            QMenuBar::item {
+                padding: 10px;
+            }
+            QMenuBar::item:selected {
+                background-color: #34495E;
+            }
+            QMenu {
+                background-color: #34495E;
+                color: white;
+            }
+            QMenu::item:selected {
+                background-color: #3498db;
+            }
+        """)
+
+        # File Menu
+        file_menu = menubar.addMenu("File")
+        exit_action = QAction("Exit", self)
+        exit_action.triggered.connect(self.close)
+        file_menu.addAction(exit_action)
+
+        # Help Menu
+        help_menu = menubar.addMenu("Help")
+        about_action = QAction("About", self)
+        about_action.triggered.connect(self.show_about)
+        help_menu.addAction(about_action)
+
+    def show_about(self):
+        webbrowser.open("about.html")
+
+    def show_page(self, index):
+        # Switch to the page by index
+        self.stacked_widget.setCurrentIndex(index)
 
 # Run the application
-if __name__ == "__main__":
-    app = MultiPageApp()
-    app.mainloop()
+app = QApplication(sys.argv)
+window = MainWindow()
+window.show()
+sys.exit(app.exec_())
