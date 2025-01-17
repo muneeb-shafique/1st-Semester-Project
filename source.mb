@@ -7,7 +7,6 @@
     <meta http-equiv="X-UA-Compatible" content="ie=edge">
     <title>Student Result</title>
     <style>
-        /* Global Styles */
         body {
             font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
             background-color: #f4f7fc;
@@ -111,8 +110,6 @@
         .btn:hover {
             background-color: #3498db;
         }
-
-        /* Responsive Design */
         @media screen and (max-width: 768px) {
             table {
                 font-size: 0.9em;
